@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="./urval/1u.png" type="image/png" />
+    <link rel="stylesheet" href="https://use.typekit.net/fcg7czk.css">
+    <title>Image Rating</title>
+    <style>
+      :root {
+        --bg: hsl(0, 0%, 90%);
+        --panel: hsl(0, 0%, 90%);
+        --text: #000000;
+        --muted: #000000;
+        --accent: #000000;
+        /* All brödtext samma storlek; rubrik (h1) har egen font-size. */
+        --copy-size: 22px;
+      }
+
+
+      body {
+        margin: 0;
+        font-family: "forma-djr-text", sans-serif;
+        font-size: var(--copy-size);
+        font-weight: 400;
+        font-style: normal;
+     /*   letter-spacing: -0.2em;*/
+        background: var(--bg);
+        color: var(--text);
+      }
+      .wrap {
+        max-width: 1600px;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        margin-right: auto;
+        padding: 10px 10px 14px 30px;
+      }
+      @media (max-width: 1180px) {
+        .wrap {
+          padding: 37px 41px 46px 41px;
+        }
+        .intro {
+          max-width: none;
+        }
+      }
+      .top {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      h1 {
+        font-size: 60px;
+        margin: 0;
+        font-weight: 400;
+        text-align: left;
+      }
+      .intro {
+        margin: 0;
+        max-width: 48ch;
+        line-height: 1.45;
+        font-weight: 400;
+        color: var(--text);
+      }
+      .meta {
+        color: var(--muted);
+      }
+      /* Mobile-first: bild ovanför, sliders under. Bred skärm: två kolumner (annars skriver grid-column:2 över stapling). */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        align-items: start;
+        justify-content: start;
+        justify-items: stretch;
+      }
+      .panel {
+        background: transparent;
+        border: none;
+        padding: 0;
+      }
+      .imagePanel {
+        grid-column: 1;
+        min-width: 0;
+      }
+      .controlsPanel {
+        grid-column: 1;
+        justify-self: stretch;
+        margin-left: 0;
+      }
+      .imageBox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: min(100%, min(98vw, 820px));
+        max-width: 100%;
+        aspect-ratio: 3 / 2;
+        height: auto;
+        margin: 44px auto 0;
+        padding: 12px;
+        box-sizing: border-box;
+        background: #fff;
+        border: 2px solid #000;
+      }
+      img {
+        max-width: 92%;
+        max-height: 92%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+      }
+      @media (min-width: 1181px) {
+        .grid {
+          grid-template-columns: minmax(0, 1fr) minmax(420px, 520px);
+          column-gap: 0;
+          row-gap: 0;
+          gap: 0;
+        }
+        .controlsPanel {
+          grid-column: 2;
+          margin-left: -120px;
+        }
+        .imageBox {
+          width: min(100%, min(880px, 76vw));
+          margin: 44px 0 0;
+        }
+      }
+      .controls {
+        display: grid;
+        gap: 14px;
+        width: 100%;
+      }
+      .sliderRow {
+        padding: 4px 0 8px;
+        border-radius: 0;
+        background: transparent;
+        border: none;
+      }
+      .sliderTop {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .sliderLabel {
+        font-weight: 600;
+      }
+      .endpoints {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 44px;
+        margin: 0;
+        background: transparent;
+        cursor: pointer;
+        accent-color: transparent;
+        --track-h: 32px;
+        --thumb-size: 38px;
+      }
+      input[type="range"]:focus-visible {
+        outline: 2px solid #000;
+        outline-offset: 3px;
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        height: var(--track-h);
+        background: #c8c8c8;
+        border: 2px solid #000;
+        border-radius: 15px;
+        box-sizing: border-box;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: var(--thumb-size);
+        height: var(--thumb-size);
+        margin-top: calc((var(--track-h) - var(--thumb-size)) / 2);
+        border-radius: 50%;
+        background: #e31b1b;
+        border: 2px solid #000;
+        box-sizing: border-box;
+      }
+      input[type="range"]::-moz-range-track {
+        height: var(--track-h);
+        background: #c8c8c8;
+        border: 2px solid #000;
+        border-radius: 15px;
+        box-sizing: border-box;
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: var(--thumb-size);
+        height: var(--thumb-size);
+        border-radius: 50%;
+        background: #e31b1b;
+        border: 2px solid #000;
+        box-sizing: border-box;
+        cursor: pointer;
+      }
+      /* Per-slider thumb colors: WebKit and Gecko need separate rules (combined lists break in Chrome). */
+      #rel::-webkit-slider-thumb {
+        background: #e31b1b;
+      }
+      #rel::-moz-range-thumb {
+        background: #e31b1b;
+      }
+      #lr::-webkit-slider-thumb {
+        background: #ffd900;
+      }
+      #lr::-moz-range-thumb {
+        background: #ffd900;
+      }
+      #tm::-webkit-slider-thumb {
+        background: #246dff;
+      }
+      #tm::-moz-range-thumb {
+        background: #246dff;
+      }
+      #sn::-webkit-slider-thumb {
+        background: #1fa046;
+      }
+      #sn::-moz-range-thumb {
+        background: #1fa046;
+      }
+      #p6::-webkit-slider-thumb {
+        background: #fff;
+      }
+      #p6::-moz-range-thumb {
+        background: #fff;
+      }
+      input[type="range"]::-moz-focus-outer {
+        border: 0;
+      }
+      .commentRow {
+        margin-top: 0;
+        padding: 4px 0 8px;
+        border-radius: 0;
+        background: transparent;
+        border: none;
+        box-sizing: border-box;
+      }
+      .commentLabel {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 88px;
+        resize: none;
+        padding: 10px 12px;
+        font-family: inherit;
+        font-size: inherit;
+        color: var(--text);
+        background: #c8c8c8;
+        border: 2px solid #000;
+        border-radius: 20px;
+      }
+      textarea:focus,
+      textarea:focus-visible {
+        outline: none;
+      }
+      .charCount {
+        margin-top: 8px;
+        text-align: right;
+        color: var(--text);
+      }
+      .btnRow {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 0;
+        padding: 8px 0 0;
+        border-radius: 0;
+        background: transparent;
+        border: none;
+        box-sizing: border-box;
+      }
+      button {
+        appearance: none;
+        border: 2px solid #000;
+        border-radius: 0;
+        background: #c8c8c8;
+        color: var(--text);
+        padding: 12px 18px;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: 400;
+        border-radius: 15px;
+        cursor: pointer;
+      }
+      button:focus-visible {
+        outline: 2px solid #000;
+        outline-offset: 2px;
+      }
+      button:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .status {
+        margin-top: 10px;
+        color: var(--muted);
+        min-height: 1.2em;
+      }
+      .error {
+        color: #ffb3b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="top">
+        <h1>Hur tolkar du flaggan?</h1>
+        <p class="intro">Föreställ dig dessa bilder som landsflaggor och försök sätta värdering på dem.</p>
+      </div>
+
+      <div class="grid">
+        <div class="panel imagePanel">
+          <div class="imageBox">
+            <img id="img" alt="Current image" />
+          </div>
+        </div>
+
+        <div class="panel controlsPanel">
+          <form id="form" class="controls">
+            <div class="sliderRow">
+              <div class="sliderTop">
+                <div class="sliderLabel"></div>
+              </div>
+              <div class="endpoints"><span>Religös</span><span>Sekulär</span></div>
+              <input id="rel" type="range" min="1" max="5" step="1" value="3" />
+            </div>
+
+            <div class="sliderRow">
+              <div class="sliderTop">
+                <div class="sliderLabel"></div>
+              </div>
+              <div class="endpoints"><span>Vänsterpolitik</span><span>Högerpolitik</span></div>
+              <input id="lr" type="range" min="1" max="5" step="1" value="3" />
+            </div>
+
+            <div class="sliderRow">
+              <div class="sliderTop">
+                <div class="sliderLabel"></div>
+              </div>
+              <div class="endpoints"><span>Traditionell</span><span>Modern</span></div>
+              <input id="tm" type="range" min="1" max="5" step="1" value="3" />
+            </div>
+
+            <div class="sliderRow">
+              <div class="sliderTop">
+                <div class="sliderLabel"></div>
+              </div>
+              <div class="endpoints"><span>Söder om ekvatorn</span><span>Norr om ekvatorn</span></div>
+              <input id="sn" type="range" min="1" max="5" step="1" value="3" />
+            </div>
+
+            <div class="sliderRow">
+              <div class="sliderTop">
+                <div class="sliderLabel"></div>
+              </div>
+              <div class="endpoints"><span>Västerländsk</span><span>Österländsk</span></div>
+              <input id="p6" type="range" min="1" max="5" step="1" value="3" />
+            </div>
+
+            <div class="commentRow">
+              <label for="comment" class="commentLabel">Andra tankar kring flaggan?:</label>
+              <textarea id="comment" maxlength="500" placeholder=""></textarea>
+            </div>
+
+            <div class="btnRow">
+              <button type="submit" class="primary" id="submitBtn">Nästa</button>
+            </div>
+
+            <div class="status" id="status"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Paste your Google Apps Script "Web app" deployment URL here.
+      // Example: https://script.google.com/macros/s/XXXX/exec
+      const LOG_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycby3P6a0-ZECh0JMj8Oj6Tey7w_B1cXnsr20aOyvrI-aH7SptKXMERtcfWJbCQM0fwOX/exec";
+
+      // Scales are logged as numbers 1-5.
+      const state = {
+        images: [],
+        idx: 0,
+        isBusy: false,
+      };
+
+      const $ = (id) => document.getElementById(id);
+
+      const sliders = [
+        { id: "rel", key: "religious" },
+        { id: "lr", key: "leftRight" },
+        { id: "tm", key: "traditionalModern" },
+        { id: "sn", key: "southNorth" },
+        { id: "p6", key: "eastWest" },
+      ];
+
+      function wireCommentCounter() {
+        const commentInput = $("comment");
+        const counter = $("commentCount");
+        if (!commentInput || !counter) return;
+        const update = () => {
+          counter.textContent = String(commentInput.value.length);
+        };
+        commentInput.addEventListener("input", update);
+        update();
+      }
+
+      wireCommentCounter();
+
+      const DEFAULT_SLIDER_VALUE = "3";
+
+      function resetForm() {
+        sliders.forEach((ui) => {
+          const input = $(ui.id);
+          if (input) input.value = DEFAULT_SLIDER_VALUE;
+        });
+        const commentEl = $("comment");
+        const countEl = $("commentCount");
+        if (commentEl) commentEl.value = "";
+        if (countEl) countEl.textContent = "0";
+      }
+
+      function setStatus(msg, isError) {
+        const el = $("status");
+        el.textContent = msg || "";
+        el.className = isError ? "status error" : "status";
+      }
+
+      function getCurrentImage() {
+        return state.images[state.idx] || null;
+      }
+
+      function renderCurrentImage() {
+        const name = getCurrentImage();
+        if (!name) return;
+        const img = $("img");
+        // Images are assumed to live at ./urval/<filename>
+        img.src = "./urval/" + encodeURIComponent(name);
+        img.alt = name;
+      }
+
+      function getPayload() {
+        const imgName = getCurrentImage();
+        return {
+          timestamp: new Date().toISOString(),
+          image: imgName,
+          religious: Number($("rel").value),
+          leftRight: Number($("lr").value),
+          traditionalModern: Number($("tm").value),
+          southNorth: Number($("sn").value),
+          eastWest: Number($("p6").value),
+          comment: $("comment").value.trim(),
+        };
+      }
+
+      async function tryLoadImageList() {
+        // If your local server shows directory listings, we can auto-detect images from ./images/.
+        // If it fails, you can switch to a hardcoded list by editing state.images below.
+        const exts = ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"];
+        try {
+          const res = await fetch("./images/", { method: "GET" });
+          if (!res.ok) throw new Error("Could not load ./images/ (directory listing might be disabled).");
+          const text = await res.text();
+          // Extract hrefs. This works for basic directory listings.
+          const matches = [...text.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+          const files = matches
+            .map((s) => s.replace(/^\.?\//, ""))
+            .filter((f) => exts.some((e) => f.toLowerCase().endsWith("." + e)))
+            .filter((f) => f.indexOf("/") === -1);
+
+          // De-dupe + sort.
+          const unique = Array.from(new Set(files)).sort();
+          return unique;
+        } catch (e) {
+          console.warn("Auto image listing failed:", e);
+          return [];
+        }
+      }
+
+      async function logToGoogleSheet(payload) {
+        if (!LOG_ENDPOINT_URL) {
+          throw new Error("LOG_ENDPOINT_URL is empty. Paste your Apps Script web app URL in index.html.");
+        }
+
+        const res = await fetch(LOG_ENDPOINT_URL, {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        const text = await res.text().catch(() => "");
+        if (!res.ok) {
+          throw new Error("Logging failed: HTTP " + res.status + (text ? " - " + text : ""));
+        }
+      }
+
+      function nextImage() {
+        state.idx += 1;
+        if (state.idx >= state.images.length) {
+          $("img").src = "";
+          setStatus("Finished. Thanks!", false);
+          $("submitBtn").disabled = true;
+          return;
+        }
+        renderCurrentImage();
+      }
+
+      async function handleSubmit() {
+        if (state.isBusy) return;
+        if (!getCurrentImage()) return;
+
+        state.isBusy = true;
+        $("submitBtn").disabled = true;
+
+        try {
+          setStatus("Vänta");
+          const payload = getPayload();
+          await logToGoogleSheet(payload);
+          setStatus("Sparad");
+
+          // Small delay for UX
+          await new Promise((r) => setTimeout(r, 300));
+          nextImage();
+          resetForm();
+          if (getCurrentImage()) {
+            setStatus("");
+          }
+        } catch (e) {
+          console.error(e);
+          setStatus(String(e && e.message ? e.message : e), true);
+        } finally {
+          state.isBusy = false;
+          $("submitBtn").disabled = false;
+        }
+      }
+
+      $("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        handleSubmit();
+      });
+
+      (async function init() {
+        setStatus("Loading image list...");
+        // Images are in ./urval and named flag1.png ... flag15.png
+        state.images = Array.from({ length: 15 }, (_, i) => `flag${i + 1}.png`);
+
+        if (state.images.length > 0) {
+          state.idx = 0;
+          renderCurrentImage();
+          setStatus("");
+        }
+      })();
+    </script>
+  </body>
+</html>
