@@ -14,7 +14,7 @@
         --muted: #000000;
         --accent: #000000;
         /* All brödtext samma storlek; rubrik (h1) har egen font-size. */
-        --copy-size: 22px;
+        --copy-size: 16px;
       }
 
 
@@ -49,11 +49,11 @@
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        gap: 10px;
-        margin-bottom: 16px;
+        gap: 8px;
+        margin-bottom: 12px;
       }
       h1 {
-        font-size: 60px;
+        font-size: 42px;
         margin: 0;
         font-weight: 400;
         text-align: left;
@@ -95,11 +95,11 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: min(100%, min(98vw, 820px));
+        width: min(92vw, 860px);
         max-width: 100%;
         aspect-ratio: 3 / 2;
         height: auto;
-        margin: 44px auto 0;
+        margin: 24px auto 0;
         padding: 12px;
         box-sizing: border-box;
         background: #fff;
@@ -115,23 +115,25 @@
       }
       @media (min-width: 1181px) {
         .grid {
-          grid-template-columns: minmax(0, 1fr) minmax(420px, 520px);
-          column-gap: 0;
+          grid-template-columns: 45vw minmax(470px, 650px);
+          column-gap: 28px;
           row-gap: 0;
-          gap: 0;
+          justify-content: start;
         }
         .controlsPanel {
           grid-column: 2;
-          margin-left: -120px;
+          justify-self: stretch;
+          width: 100%;
+          margin-left: 0;
         }
         .imageBox {
-          width: min(100%, min(880px, 76vw));
-          margin: 44px 0 0;
+          width: 45vw;
+          margin: 24px 0 0;
         }
       }
       .controls {
         display: grid;
-        gap: 14px;
+        gap: 3px;
         width: 100%;
       }
       .sliderRow {
@@ -161,13 +163,13 @@
         -webkit-appearance: none;
         appearance: none;
         width: 100%;
-        height: 44px;
+        height: 36px;
         margin: 0;
         background: transparent;
         cursor: pointer;
         accent-color: transparent;
-        --track-h: 32px;
-        --thumb-size: 38px;
+        --track-h: 24px;
+        --thumb-size: 36px;
       }
       input[type="range"]:focus-visible {
         outline: 2px solid #000;
@@ -190,6 +192,7 @@
         background: #e31b1b;
         border: 2px solid #000;
         box-sizing: border-box;
+        transition: transform 120ms ease;
       }
       input[type="range"]::-moz-range-track {
         height: var(--track-h);
@@ -206,6 +209,13 @@
         border: 2px solid #000;
         box-sizing: border-box;
         cursor: pointer;
+        transition: transform 120ms ease;
+      }
+      input[type="range"]:hover::-webkit-slider-thumb {
+        transform: scale(1.2);
+      }
+      input[type="range"]:hover::-moz-range-thumb {
+        transform: scale(1.2);
       }
       /* Per-slider thumb colors: WebKit and Gecko need separate rules (combined lists break in Chrome). */
       #rel::-webkit-slider-thumb {
@@ -257,7 +267,7 @@
       textarea {
         width: 100%;
         box-sizing: border-box;
-        min-height: 88px;
+        min-height: 72px;
         resize: none;
         padding: 10px 12px;
         font-family: inherit;
