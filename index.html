@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="./urval/1u.png" type="image/png" />
     <link rel="stylesheet" href="https://use.typekit.net/fcg7czk.css">
     <title>Image Rating</title>
     <style>
@@ -448,12 +447,36 @@
         return state.images[state.idx] || null;
       }
 
+      const IMAGE_BASE_DIRS = ["./urval/", "./images/", "./"];
+
+      function buildImageCandidates(name) {
+        return IMAGE_BASE_DIRS.map((base) => base + encodeURIComponent(name));
+      }
+
       function renderCurrentImage() {
         const name = getCurrentImage();
         if (!name) return;
         const img = $("img");
-        // Images are assumed to live at ./urval/<filename>
-        img.src = "./urval/" + encodeURIComponent(name);
+        const candidates = buildImageCandidates(name);
+        let candidateIdx = 0;
+
+        function tryNextCandidate() {
+          if (candidateIdx >= candidates.length) {
+            img.removeAttribute("src");
+            setStatus("Could not load image: " + name, true);
+            img.onerror = null;
+            return;
+          }
+          img.src = candidates[candidateIdx];
+          candidateIdx += 1;
+        }
+
+        img.onerror = tryNextCandidate;
+        img.onload = function () {
+          img.onerror = null;
+        };
+
+        tryNextCandidate();
         img.alt = name;
       }
 
